@@ -10,6 +10,8 @@ build/
 dist/
 checkpoints/
 checkpoints_*/
+main/checkpoints/
+main/checkpoints_*/
 .idea/
 *.py[cod]
 *.c[cod]

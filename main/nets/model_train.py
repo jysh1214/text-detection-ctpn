@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.contrib import slim
+# from tensorflow.contrib import slim
+import tf_slim as slim
 
 from nets import vgg
 from utils.rpn_msr.anchor_target_layer import anchor_target_layer as anchor_target_layer_py
@@ -16,26 +17,26 @@ def mean_image_subtraction(images, means=[123.68, 116.78, 103.94]):
 
 
 def make_var(name, shape, initializer=None):
-    return tf.get_variable(name, shape, initializer=initializer)
+    return tf.compat.v1.get_variable(name, shape, initializer=initializer)
 
 
 def Bilstm(net, input_channel, hidden_unit_num, output_channel, scope_name):
     # width--->time step
-    with tf.variable_scope(scope_name) as scope:
+    with tf.compat.v1.variable_scope(scope_name) as scope:
         shape = tf.shape(net)
         N, H, W, C = shape[0], shape[1], shape[2], shape[3]
         net = tf.reshape(net, [N * H, W, C])
         net.set_shape([None, None, input_channel])
 
-        lstm_fw_cell = tf.contrib.rnn.LSTMCell(hidden_unit_num, state_is_tuple=True)
-        lstm_bw_cell = tf.contrib.rnn.LSTMCell(hidden_unit_num, state_is_tuple=True)
+        lstm_fw_cell = tf.compat.v1.nn.rnn_cell.LSTMCell(hidden_unit_num, state_is_tuple=True)
+        lstm_bw_cell = tf.compat.v1.nn.rnn_cell.LSTMCell(hidden_unit_num, state_is_tuple=True)
 
-        lstm_out, last_state = tf.nn.bidirectional_dynamic_rnn(lstm_fw_cell, lstm_bw_cell, net, dtype=tf.float32)
+        lstm_out, last_state = tf.compat.v1.nn.bidirectional_dynamic_rnn(lstm_fw_cell, lstm_bw_cell, net, dtype=tf.float32)
         lstm_out = tf.concat(lstm_out, axis=-1)
 
         lstm_out = tf.reshape(lstm_out, [N * H * W, 2 * hidden_unit_num])
 
-        init_weights = tf.contrib.layers.variance_scaling_initializer(factor=0.01, mode='FAN_AVG', uniform=False)
+        init_weights = tf.compat.v1.keras.initializers.VarianceScaling(scale=0.01)
         init_biases = tf.constant_initializer(0.0)
         weights = make_var('weights', [2 * hidden_unit_num, output_channel], init_weights)
         biases = make_var('biases', [output_channel], init_biases)
@@ -47,12 +48,12 @@ def Bilstm(net, input_channel, hidden_unit_num, output_channel, scope_name):
 
 
 def lstm_fc(net, input_channel, output_channel, scope_name):
-    with tf.variable_scope(scope_name) as scope:
+    with tf.compat.v1.variable_scope(scope_name) as scope:
         shape = tf.shape(net)
         N, H, W, C = shape[0], shape[1], shape[2], shape[3]
         net = tf.reshape(net, [N * H * W, C])
 
-        init_weights = tf.contrib.layers.variance_scaling_initializer(factor=0.01, mode='FAN_AVG', uniform=False)
+        init_weights = tf.compat.v1.keras.initializers.VarianceScaling(scale=0.01)
         init_biases = tf.constant_initializer(0.0)
         weights = make_var('weights', [input_channel, output_channel], init_weights)
         biases = make_var('biases', [output_channel], init_biases)
