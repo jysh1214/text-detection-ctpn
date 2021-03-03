@@ -68,5 +68,7 @@ python ./main/train.py
 ***
 ## references
 [tf to tf2](https://blog.csdn.net/Barry_J/article/details/102463983)
+
 [tf_slim](https://github.com/google-research/tf-slim)
+
 [venv](https://sourabhbajaj.com/mac-setup/Python/virtualenv.html)
