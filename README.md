@@ -1,4 +1,4 @@
-# text-detection-ctpn
+# text-detection-ctpn with TF2
 
 Scene text detection based on ctpn (connectionist text proposal network). It is implemented in tensorflow. The origin paper can be found [here](https://arxiv.org/abs/1609.03605). Also, the origin repo in caffe can be found in [here](https://github.com/tianzhi0549/CTPN). For more detail about the paper and code, see this [blog](http://slade-ruan.me/2017/10/22/text-detection-ctpn/). If you got any questions, check the issue first, if the problem persists, open a new issue.
 ***
@@ -11,6 +11,11 @@ Scene text detection based on ctpn (connectionist text proposal network). It is 
 - [x] oriented text connector
 - [x] BLSTM
 ***
+# prework
+```shell
+pip install --upgrade tf_slim
+```
+
 # setup
 nms and bbox utils are written in cython, hence you have to build the library first.
 ```shell
@@ -61,3 +66,7 @@ python ./main/train.py
 <img src="/data/res/007.jpg" width=320 height=240 /><img src="/data/res_oriented/007.jpg" width=320 height=240 />
 <img src="/data/res/008.jpg" width=320 height=480 /><img src="/data/res_oriented/008.jpg" width=320 height=480 />
 ***
+## references
+[tf to tf2](https://blog.csdn.net/Barry_J/article/details/102463983)
+[tf_slim](https://github.com/google-research/tf-slim)
+[venv](https://sourabhbajaj.com/mac-setup/Python/virtualenv.html)
